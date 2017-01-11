@@ -11,14 +11,16 @@ class DownloadEmailTestMethods(unittest.TestCase):
         self.assertEqual(internetStatus,1)
  
     def test_download(self):
+        runCommand = commands.getstatusoutput
         os.chdir('downloadedEmails')
-        output = commands.getstatusoutput('sudo rm *.txt')
+        runCommand('sudo rm *.txt')
         os.chdir('..')
-        output = commands.getstatusoutput('sudo python downloadEmails.py \'subject:Czechoslovakia\'') 
+        runCommand('sudo python downloadEmails.py \'subject:Czechoslovakia\'') 
         os.chdir('downloadedEmails')
-        output = commands.getstatusoutput('ls')        
+        output = runCommand('ls')
+        #Check for the file name in the tuple that got returned, to make sure we downloaded the one email, and ensure that is ALL we downloaded!   
         output = output[1]
-        commands.getstatusoutput('sudo rm \'Take a lovely holiday in Czechoslovakia!.txt\'')
+        runCommand('sudo rm \'Take a lovely holiday in Czechoslovakia!.txt\'')
         self.assertEqual(output, 'Take a lovely holiday in Czechoslovakia!.txt')
 
 
