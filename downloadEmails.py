@@ -7,18 +7,19 @@
 from __future__ import print_function
 import httplib2
 import os
+import sys
 
 from apiclient import discovery, errors
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
-
+"""
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
 except ImportError:
     flags = None
-
+"""
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/gmail-python-quickstart.json
 SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
@@ -99,22 +100,26 @@ def getMessageThatMatchesQuery(service, user_id, message_id):
     except errors.HttpError, error:
         print ('An error occurred: %s' % error)
 
-def main():
+def main(argv):
     """Shows basic usage of the Gmail API.
 
     Creates a Gmail API service object and outputs a list of label names
     of the user's Gmail account.
     """
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    service = discovery.build('gmail', 'v1', http=http)
-    #Change directory into the subfolder so we don't pollute this directory with text files that have long names!
-    os.chdir("downloadedEmails")
-    # 'me' is just slang for the current authenticated user's gmail account, or in this case, returnpath.isawesome@gmail.com
-    # This is a literal GMAIL query string, you could copy and paste it into the GMAIL search bar and it would also filter correctly!
-    getMessageIdsThatMatchQuery(service, 'me', 'subject:Netflix OR subject:"Home Depot" OR subject:1800flowers')
-          
+    
+    if (len(argv) > 1):
+        query = argv[1]
+        credentials = get_credentials()
+        http = credentials.authorize(httplib2.Http())
+        service = discovery.build('gmail', 'v1', http=http)
+        #Change directory into the subfolder so we don't pollute this directory with text files that have long names!
+        os.chdir("downloadedEmails")
+        # 'me' is just slang for the current authenticated user's gmail account, or in this case, returnpath.isawesome@gmail.com
+        # This is a literal GMAIL query string, you could copy and paste it into the GMAIL search bar and it would also filter correctly!
+        getMessageIdsThatMatchQuery(service, 'me', query)
+    else:
+        print("ERROR: No argument provided for query.\nPlease provided the desired GMAIL query as the first argument.")       
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)
