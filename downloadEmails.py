@@ -1,9 +1,8 @@
-# Samuel Horton
 # Downloading Emails from Gmail
 # January 10th, 2017
 # In order to use the GMAIL API, I used code from the official Guide here:
 # https://developers.google.com/gmail/api/quickstart/python
-
+# The only method here that I did not add or modify is the get_credentials() method
 from __future__ import print_function
 import httplib2
 import os
